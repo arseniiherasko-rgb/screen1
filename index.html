@@ -3,196 +3,171 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Settings UI</title>
+  <title>iPhone Settings Replica</title>
   <style>
     * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
     :root {
       --bg: #000000;
-      --card: #17181c;
-      --card-2: #1c1d22;
-      --line: rgba(255,255,255,0.1);
+      --card: #1c1c1e;
+      --line: rgba(84,84,88,0.65);
       --text: #ffffff;
       --muted: #8e8e93;
       --blue: #0a84ff;
       --green: #34c759;
-      --icon-gray: #8e8e93;
     }
-
-    body {
+    html, body {
       margin: 0;
-      background: var(--bg);
+      background: #000;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "SF Pro Display", Arial, sans-serif;
       color: var(--text);
-      font-family: Inter, Arial, sans-serif;
-      min-height: 100vh;
+      min-height: 100%;
+    }
+    body {
       display: flex;
       justify-content: center;
-      align-items: flex-start;
-      padding: 12px;
-      overflow-x: hidden;
+      padding: 0;
     }
-
     .phone {
-      width: min(100%, 430px);
-      min-height: calc(100vh - 24px);
+      width: min(100vw, 430px);
+      min-height: 100vh;
       background: #000;
-      border-radius: 34px;
       position: relative;
       overflow: hidden;
-      box-shadow: 0 24px 60px rgba(0,0,0,0.45);
     }
-
     .screen {
       position: absolute;
       inset: 0;
-      padding: 18px 16px 32px;
-      overflow-y: auto;
       background: #000;
-      transition: transform 0.35s ease, opacity 0.35s ease;
+      overflow-y: auto;
+      padding: 8px 16px 34px;
+      transition: transform .35s ease, opacity .35s ease;
+      -ms-overflow-style: none;
+      scrollbar-width: none;
     }
-
+    .screen::-webkit-scrollbar { display: none; }
     .screen.hidden-left {
-      transform: translateX(-28%);
+      transform: translateX(-26%);
       opacity: 0;
       pointer-events: none;
     }
-
     .screen.hidden-right {
       transform: translateX(100%);
       opacity: 0;
       pointer-events: none;
     }
-
     .statusbar {
+      height: 42px;
       display: flex;
-      justify-content: space-between;
       align-items: center;
-      padding: 8px 4px 10px;
-      font-weight: 700;
-      font-size: 18px;
-      letter-spacing: 0.02em;
+      justify-content: space-between;
+      padding: 0 6px;
+      font-size: 17px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
     }
-
-    .status-right {
+    .status-icons {
       display: flex;
       align-items: center;
       gap: 10px;
       font-size: 16px;
     }
-
-    .dynamic-island {
-      width: 210px;
-      height: 38px;
-      border-radius: 999px;
-      background: #050505;
-      border: 1px solid rgba(255,255,255,0.12);
-      margin: 4px auto 14px;
-      position: relative;
-      display: flex;
-      align-items: center;
-      padding: 0 12px;
-      justify-content: space-between;
-      box-shadow: inset 0 0 0 1px rgba(255,255,255,0.04);
+    .cell-bars {
+      display: inline-flex;
+      gap: 2px;
+      align-items: end;
+      height: 13px;
     }
-
-    .island-app {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .island-app-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 7px;
-      background: linear-gradient(135deg, #ff4d4d, #7f0000);
-      box-shadow: inset 0 0 10px rgba(255,255,255,0.18);
-    }
-
-    .island-wave {
-      display: flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .island-wave span {
-      width: 4px;
-      background: #ff3b30;
-      border-radius: 999px;
+    .cell-bars span {
+      width: 3px;
+      background: #fff;
+      border-radius: 3px;
       display: block;
     }
-
-    .island-wave span:nth-child(1) { height: 10px; }
-    .island-wave span:nth-child(2) { height: 16px; }
-    .island-wave span:nth-child(3) { height: 8px; }
-    .island-wave span:nth-child(4) { height: 18px; }
-    .island-wave span:nth-child(5) { height: 11px; }
-
-    .header-title {
+    .cell-bars span:nth-child(1){height:5px;opacity:.55}
+    .cell-bars span:nth-child(2){height:8px;opacity:.7}
+    .cell-bars span:nth-child(3){height:11px;opacity:.85}
+    .cell-bars span:nth-child(4){height:13px}
+    .wifi {
+      width: 16px; height: 12px; position: relative;
+    }
+    .wifi::before, .wifi::after {
+      content: ""; position: absolute; left: 50%; transform: translateX(-50%);
+      border: 2px solid #fff; border-color: #fff transparent transparent transparent; border-radius: 50%;
+    }
+    .wifi::before { width: 16px; height: 16px; top: -2px; }
+    .wifi::after { width: 9px; height: 9px; top: 3px; }
+    .battery {
+      width: 28px; height: 16px; border: 1.8px solid #fff; border-radius: 5px; position: relative;
+      display:flex; align-items:center; justify-content:center; font-size: 11px; font-weight:700;
+    }
+    .battery::after {
+      content:""; position:absolute; right:-3px; top:4px; width:2px; height:6px; background:#fff; border-radius:0 2px 2px 0;
+    }
+    .nav-space { height: 8px; }
+    .title-center {
       text-align: center;
       font-size: 28px;
-      font-weight: 800;
-      margin: 6px 0 18px;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      margin: 14px 0 18px;
     }
-
-    .back-row {
+    .back-header {
       position: relative;
+      min-height: 50px;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin-bottom: 14px;
-      min-height: 44px;
+      margin-top: 4px;
+      margin-bottom: 10px;
     }
-
+    .back-header .title-center { margin: 0; font-size: 27px; }
     .back-btn {
       position: absolute;
       left: 0;
-      width: 44px;
-      height: 44px;
+      width: 50px;
+      height: 50px;
       border-radius: 50%;
-      border: 1px solid rgba(255,255,255,0.12);
-      background: rgba(255,255,255,0.08);
-      color: white;
+      background: rgba(28,28,30,0.88);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: #fff;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 24px;
+      font-size: 28px;
       cursor: pointer;
-      backdrop-filter: blur(10px);
+      box-shadow: 0 4px 14px rgba(0,0,0,0.28);
     }
-
     .group {
-      background: linear-gradient(180deg, #1b1c21, #17181c);
-      border-radius: 28px;
+      background: #1c1c1e;
+      border-radius: 30px;
       overflow: hidden;
-      margin-bottom: 18px;
-      box-shadow: inset 0 1px 0 rgba(255,255,255,0.02);
+      margin-bottom: 16px;
     }
-
     .row {
-      min-height: 78px;
+      min-height: 74px;
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
       padding: 0 18px;
-      gap: 14px;
       position: relative;
       cursor: pointer;
     }
-
-    .row.compact {
-      min-height: 70px;
-    }
-
+    .row.compact { min-height: 68px; }
     .row + .row::before {
       content: "";
       position: absolute;
-      left: 18px;
+      left: 70px;
       right: 18px;
       top: 0;
-      height: 1px;
+      height: .5px;
       background: var(--line);
     }
-
+    .row.no-icon + .row::before,
+    .row.no-icon::before {
+      left: 18px;
+    }
+    .row.no-icon .row-left { gap: 0; }
     .row-left {
       display: flex;
       align-items: center;
@@ -200,161 +175,132 @@
       min-width: 0;
       flex: 1;
     }
-
     .icon {
-      width: 36px;
-      height: 36px;
-      border-radius: 10px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 18px;
       flex: 0 0 auto;
       color: white;
+      font-size: 17px;
       font-weight: 700;
+      box-shadow: inset 0 0 0 0.5px rgba(255,255,255,0.2);
     }
-
-    .icon.gray { background: linear-gradient(180deg, #b9b9be, #8f8f95); }
-    .icon.blue { background: linear-gradient(180deg, #45a2ff, #0a84ff); }
-    .icon.cyan { background: linear-gradient(180deg, #55d9ff, #15b8ff); }
-    .icon.black { background: linear-gradient(180deg, #2a2a2d, #000000); }
-    .icon.apple { background: linear-gradient(135deg, #ff8ca8, #8dd4ff, #ffd585); color: white; }
-    .icon.red { background: linear-gradient(180deg, #ff6b6b, #d81f35); }
-    .icon.orange { background: linear-gradient(180deg, #ffbf47, #ff8c1a); }
-
+    .gray { background: linear-gradient(180deg,#bcbcc1,#8f8f95); }
+    .blue { background: linear-gradient(180deg,#44a4ff,#0a84ff); }
+    .cyan { background: linear-gradient(180deg,#5fe1ff,#24c4ff); }
+    .black { background: linear-gradient(180deg,#3a3a3d,#000); }
+    .apple { background: linear-gradient(135deg,#ff8bb1,#90d5ff,#ffd58a); }
+    .red { background: linear-gradient(180deg,#ff6a66,#d81d35); }
     .row-title {
-      font-size: 25px;
-      line-height: 1.15;
+      font-size: 24px;
+      line-height: 1.14;
+      letter-spacing: -0.03em;
       word-break: break-word;
     }
-
     .row-right {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
       color: var(--muted);
       font-size: 22px;
       flex: 0 0 auto;
+      letter-spacing: -0.02em;
     }
-
-    .subnote {
+    .subnote, .description {
       color: var(--muted);
-      font-size: 18px;
-      line-height: 1.3;
-      margin: -6px 6px 18px 6px;
+      font-size: 17px;
+      line-height: 1.28;
+      letter-spacing: -0.02em;
+      margin: -2px 6px 18px;
+      padding: 0 4px;
     }
-
     .section-title {
       color: var(--muted);
-      font-size: 22px;
-      font-weight: 700;
-      margin: 18px 8px 12px;
+      font-size: 18px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      margin: 14px 8px 10px;
     }
-
     .switch {
-      width: 64px;
-      height: 36px;
+      width: 51px;
+      height: 31px;
       border-radius: 999px;
-      background: #5a5a60;
+      background: #5b5b60;
       position: relative;
-      transition: background 0.2s ease;
+      transition: background .2s ease;
       flex: 0 0 auto;
+      box-shadow: inset 0 0 0 .5px rgba(255,255,255,0.08);
     }
-
     .switch::after {
       content: "";
       position: absolute;
-      top: 3px;
-      left: 3px;
-      width: 30px;
-      height: 30px;
+      top: 2px;
+      left: 2px;
+      width: 27px;
+      height: 27px;
       border-radius: 50%;
       background: #fff;
-      transition: left 0.2s ease;
-      box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+      transition: left .2s ease;
+      box-shadow: 0 1px 6px rgba(0,0,0,.28);
     }
-
-    .switch.on {
-      background: var(--green);
-    }
-
-    .switch.on::after {
-      left: 31px;
-    }
-
-    .description {
-      color: var(--muted);
-      font-size: 16px;
-      line-height: 1.35;
-      padding: 10px 6px 2px;
-      margin-bottom: 16px;
-    }
-
-    .slider-wrap {
-      padding: 18px;
-    }
-
+    .switch.on { background: var(--green); }
+    .switch.on::after { left: 22px; }
+    .slider-wrap { padding: 16px 18px 14px; }
     .slider-row {
       display: flex;
       align-items: center;
       gap: 14px;
-      min-height: 42px;
+      min-height: 38px;
     }
-
     .sun {
-      width: 28px;
+      width: 24px;
       text-align: center;
-      color: #b3b3b8;
-      font-size: 24px;
+      color: #b2b2b8;
+      font-size: 22px;
       flex: 0 0 auto;
     }
-
     .slider {
       position: relative;
       flex: 1;
-      height: 10px;
+      height: 8px;
       border-radius: 999px;
-      background: rgba(255,255,255,0.1);
-      overflow: visible;
+      background: rgba(255,255,255,.1);
     }
-
     .slider-fill {
       position: absolute;
-      left: 0;
-      top: 0;
-      bottom: 0;
-      width: 72%;
-      border-radius: 999px;
-      background: var(--blue);
+      inset: 0 auto 0 0;
+      width: 70%;
+      border-radius: inherit;
+      background: #0a84ff;
     }
-
     .slider-thumb {
       position: absolute;
+      left: 70%;
       top: 50%;
-      left: 72%;
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
+      width: 42px;
+      height: 42px;
+      transform: translate(-50%,-50%);
       background: white;
-      transform: translate(-50%, -50%);
-      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      border-radius: 50%;
+      box-shadow: 0 6px 14px rgba(0,0,0,.32);
     }
-
     .search-bar {
       position: sticky;
-      bottom: 10px;
-      margin-top: 26px;
-      border-radius: 22px;
-      background: rgba(34,35,40,0.92);
-      border: 1px solid rgba(255,255,255,0.08);
-      height: 58px;
+      bottom: 8px;
+      margin-top: 18px;
+      height: 56px;
+      border-radius: 20px;
+      background: rgba(28,28,30,.92);
+      border: .5px solid rgba(255,255,255,0.09);
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 16px;
-      backdrop-filter: blur(14px);
+      padding: 0 18px;
+      backdrop-filter: blur(18px);
     }
-
     .search-left {
       display: flex;
       align-items: center;
@@ -362,193 +308,150 @@
       color: var(--muted);
       font-size: 20px;
     }
-
+    .home-indicator {
+      width: 134px;
+      height: 5px;
+      border-radius: 999px;
+      background: #fff;
+      opacity: 0.95;
+      margin: 16px auto 4px;
+    }
     .privacy-overlay {
       position: absolute;
       inset: 0;
-      background: rgba(0,0,0,0.78);
+      background: rgba(0,0,0,.82);
       opacity: 0;
       pointer-events: none;
-      transition: opacity 0.12s linear;
-      z-index: 30;
+      transition: opacity .1s linear;
+      z-index: 50;
     }
-
-    .privacy-overlay.show {
-      opacity: 1;
-    }
+    .privacy-overlay.show { opacity: 1; }
   </style>
 </head>
 <body>
-  <div class="phone" id="phone">
+  <div class="phone">
     <div class="privacy-overlay" id="privacyOverlay"></div>
 
     <section class="screen" id="settingsScreen">
       <div class="statusbar">
         <div>14:52</div>
-        <div class="status-right">
-          <span>◔◔</span>
-          <span>◜◝</span>
-          <span>37</span>
+        <div class="status-icons">
+          <div class="cell-bars"><span></span><span></span><span></span><span></span></div>
+          <div class="wifi"></div>
+          <div class="battery">37</div>
         </div>
       </div>
 
-      <div class="dynamic-island">
-        <div class="island-app">
-          <div class="island-app-icon"></div>
-        </div>
-        <div class="island-wave"><span></span><span></span><span></span><span></span><span></span></div>
-      </div>
-
-      <div class="header-title">Settings</div>
+      <div class="nav-space"></div>
+      <div class="title-center">Settings</div>
 
       <div class="group">
         <div class="row">
-          <div class="row-left">
-            <div class="icon gray">⚙</div>
-            <div class="row-title">General</div>
-          </div>
+          <div class="row-left"><div class="icon gray">⚙</div><div class="row-title">General</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row">
-          <div class="row-left">
-            <div class="icon blue">✣</div>
-            <div class="row-title">Accessibility</div>
-          </div>
+          <div class="row-left"><div class="icon blue">♿</div><div class="row-title">Accessibility</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row">
-          <div class="row-left">
-            <div class="icon gray">◉</div>
-            <div class="row-title">Camera</div>
-          </div>
+          <div class="row-left"><div class="icon gray">◉</div><div class="row-title">Camera</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row">
-          <div class="row-left">
-            <div class="icon blue">↱</div>
-            <div class="row-title">Action Button</div>
-          </div>
+          <div class="row-left"><div class="icon blue">↱</div><div class="row-title">Action Button</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row">
-          <div class="row-left">
-            <div class="icon cyan">✿</div>
-            <div class="row-title">Wallpaper</div>
-          </div>
+          <div class="row-left"><div class="icon cyan">✿</div><div class="row-title">Wallpaper</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row">
-          <div class="row-left">
-            <div class="icon black">◔</div>
-            <div class="row-title">StandBy</div>
-          </div>
+          <div class="row-left"><div class="icon black">◔</div><div class="row-title">StandBy</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row">
-          <div class="row-left">
-            <div class="icon gray">⌕</div>
-            <div class="row-title">Search</div>
-          </div>
+          <div class="row-left"><div class="icon gray">⌕</div><div class="row-title">Search</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row">
-          <div class="row-left">
-            <div class="icon gray">▭</div>
-            <div class="row-title">Control Center</div>
-          </div>
+          <div class="row-left"><div class="icon gray">▭</div><div class="row-title">Control Center</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row">
-          <div class="row-left">
-            <div class="icon blue">▦</div>
-            <div class="row-title">Home Screen & App Library</div>
-          </div>
+          <div class="row-left"><div class="icon blue">▦</div><div class="row-title">Home Screen & App Library</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row" id="openDisplayRow">
-          <div class="row-left">
-            <div class="icon blue">☀</div>
-            <div class="row-title">Display & Brightness</div>
-          </div>
+          <div class="row-left"><div class="icon blue">☀</div><div class="row-title">Display & Brightness</div></div>
           <div class="row-right">›</div>
         </div>
         <div class="row">
-          <div class="row-left">
-            <div class="icon apple">◌</div>
-            <div class="row-title">Apple Intelligence & Siri</div>
-          </div>
+          <div class="row-left"><div class="icon apple">◌</div><div class="row-title">Apple Intelligence & Siri</div></div>
           <div class="row-right">›</div>
         </div>
-      </div>
-
-      <div class="group">
         <div class="row">
-          <div class="row-left">
-            <div class="icon red">🔔</div>
-            <div class="row-title">Notifications</div>
-          </div>
+          <div class="row-left"><div class="icon red">🔔</div><div class="row-title">Notifications</div></div>
+          <div class="row-right">›</div>
+        </div>
+        <div class="row">
+          <div class="row-left"><div class="icon red">♫</div><div class="row-title">Sounds & Haptics</div></div>
+          <div class="row-right">›</div>
+        </div>
+        <div class="row">
+          <div class="row-left"><div class="icon orange">◐</div><div class="row-title">Focus</div></div>
+          <div class="row-right">›</div>
+        </div>
+        <div class="row">
+          <div class="row-left"><div class="icon red">⏱</div><div class="row-title">Screen Time</div></div>
           <div class="row-right">›</div>
         </div>
       </div>
 
       <div class="search-bar">
         <div class="search-left"><span>⌕</span><span>Search</span></div>
-        <div style="font-size:24px;color:#d6d6db;">◔</div>
+        <div style="font-size:23px;color:#f3f3f4;opacity:.95;">◔</div>
       </div>
+      <div class="home-indicator"></div>
     </section>
 
     <section class="screen hidden-right" id="displayScreen">
       <div class="statusbar">
         <div>14:52</div>
-        <div class="status-right">
-          <span>◔◔</span>
-          <span>◜◝</span>
-          <span>37</span>
+        <div class="status-icons">
+          <div class="cell-bars"><span></span><span></span><span></span><span></span></div>
+          <div class="wifi"></div>
+          <div class="battery">37</div>
         </div>
       </div>
 
-      <div class="dynamic-island">
-        <div class="island-app">
-          <div class="island-app-icon"></div>
-        </div>
-        <div class="island-wave"><span></span><span></span><span></span><span></span><span></span></div>
-      </div>
-
-      <div class="back-row">
+      <div class="back-header">
         <button class="back-btn" id="backBtn">‹</button>
-        <div class="header-title" style="margin:0;">Display & Brightness</div>
+        <div class="title-center">Display & Brightness</div>
       </div>
 
       <div class="group">
-        <div class="row compact">
-          <div class="row-left">
-            <div class="row-title">Automatic</div>
-          </div>
+        <div class="row compact no-icon">
+          <div class="row-left"><div class="row-title">Automatic</div></div>
           <div class="switch" id="automaticSwitch"></div>
         </div>
       </div>
 
       <div class="group">
-        <div class="row compact">
-          <div class="row-left">
-            <div class="row-title">Liquid Glass</div>
-          </div>
+        <div class="row compact no-icon">
+          <div class="row-left"><div class="row-title">Liquid Glass</div></div>
           <div class="row-right"><span>Clear</span><span>›</span></div>
         </div>
       </div>
       <div class="subnote">Customize the appearance with the Liquid Glass effect.</div>
 
       <div class="group">
-        <div class="row compact">
-          <div class="row-left">
-            <div class="row-title">Text Size</div>
-          </div>
+        <div class="row compact no-icon">
+          <div class="row-left"><div class="row-title">Text Size</div></div>
           <div class="row-right">›</div>
         </div>
-        <div class="row compact">
-          <div class="row-left">
-            <div class="row-title">Bold Text</div>
-          </div>
+        <div class="row compact no-icon">
+          <div class="row-left"><div class="row-title">Bold Text</div></div>
           <div class="switch" id="boldSwitch"></div>
         </div>
       </div>
@@ -558,51 +461,39 @@
         <div class="slider-wrap">
           <div class="slider-row">
             <div class="sun">☼</div>
-            <div class="slider">
-              <div class="slider-fill"></div>
-              <div class="slider-thumb"></div>
-            </div>
+            <div class="slider"><div class="slider-fill"></div><div class="slider-thumb"></div></div>
             <div class="sun">☀</div>
           </div>
         </div>
-        <div class="row compact">
-          <div class="row-left">
-            <div class="row-title">True Tone</div>
-          </div>
+        <div class="row compact no-icon">
+          <div class="row-left"><div class="row-title">True Tone</div></div>
           <div class="switch" id="trueToneSwitch"></div>
         </div>
-        <div class="row compact">
-          <div class="row-left">
-            <div class="row-title">Privacy Screen</div>
-          </div>
+        <div class="row compact no-icon">
+          <div class="row-left"><div class="row-title">Privacy Screen</div></div>
           <div class="switch" id="privacySwitch"></div>
         </div>
       </div>
-      <div class="description">Automatically adapt the display to darken periodically for a privacy effect.</div>
+      <div class="description">Automatically darken the display periodically for a privacy effect.</div>
 
       <div class="group">
-        <div class="row compact">
-          <div class="row-left">
-            <div class="row-title">Night Shift</div>
-          </div>
+        <div class="row compact no-icon">
+          <div class="row-left"><div class="row-title">Night Shift</div></div>
           <div class="row-right"><span>Off</span><span>›</span></div>
         </div>
       </div>
 
       <div class="group">
-        <div class="row compact">
-          <div class="row-left">
-            <div class="row-title">Auto-Lock</div>
-          </div>
+        <div class="row compact no-icon">
+          <div class="row-left"><div class="row-title">Auto-Lock</div></div>
           <div class="row-right"><span>Never</span><span>›</span></div>
         </div>
-        <div class="row compact">
-          <div class="row-left">
-            <div class="row-title">Raise to Wake</div>
-          </div>
+        <div class="row compact no-icon">
+          <div class="row-left"><div class="row-title">Raise to Wake</div></div>
           <div class="switch on" id="raiseSwitch"></div>
         </div>
       </div>
+      <div class="home-indicator"></div>
     </section>
   </div>
 
@@ -622,9 +513,7 @@
       sw.addEventListener('click', (e) => {
         e.stopPropagation();
         toggleSwitch(sw);
-        if (sw === privacySwitch && sw.classList.contains('on')) {
-          runPrivacySequence();
-        }
+        if (sw === privacySwitch && sw.classList.contains('on')) runPrivacySequence();
       });
     });
 
@@ -640,9 +529,7 @@
 
     function flashDark() {
       privacyOverlay.classList.add('show');
-      setTimeout(() => {
-        privacyOverlay.classList.remove('show');
-      }, 550);
+      setTimeout(() => privacyOverlay.classList.remove('show'), 550);
     }
 
     function runPrivacySequence() {
